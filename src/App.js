@@ -6,28 +6,25 @@ import CharacterGrid from "./components/characters/characterGrid";
 import Search from "./components/ui/Search";
 
 export default function App() {
-  //state: content items , func to change state: setItems
-  //initial state is an empty array
   const [items, setItems] = useState([]);
-  // isLoading: to see if state is still loading, setIsloading: change isloading state
-  // initial state is set to true
+
   const [query, setQuery] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
-  //use axios to make our http req. axios returns a promise
-  //and api call s howuld be made in the useEffect()
+  const REQUEST_URL =
+    query !== ""
+      ? `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=95ec914d7a53a26b5d95bd29bdafd041&include_adult=false&language=en-US&page=1%27`
+      : `https://api.themoviedb.org/3/discover/movie?api_key=95ec914d7a53a26b5d95bd29bdafd041&with_networks=213`;
+
   useEffect(() => {
     const fetchItems = async () => {
-      const result = await axios(
-        `https://www.breakingbadapi.com/api/characters?name=${query}`
-      );
-      console.log(result);
-      setItems(result.data); //use the change state func to update it
+      const result = await axios(REQUEST_URL);
+      setItems(result.data.results); //use the change state func to update it
       setIsLoading(false); // done loading so set i to false
     };
 
     fetchItems();
-  }, [query]); //query here acts as a dependency, so whenever query chnages, the useEffect hook fires again
+  }, [query]);
 
   return (
     <div className="container">
